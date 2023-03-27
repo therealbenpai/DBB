@@ -5,7 +5,7 @@
     "fs-extra": "^11.1.1",
     "inquirer": "^9.1.5"
   },
-  "name": "bot-builder",
+  "name": "benpai-bot-builder",
   "version": "1.0.0",
   "description": "A Discord.JS bot builder CLI system made by sparty182020",
   "main": "index.js",
@@ -36,5 +36,6 @@
   "type": "module",
   "devDependencies": {
     "@types/chalk": "^2.2.0"
-  }
+  },
+  "bin": "index.js"
 }
