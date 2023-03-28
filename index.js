@@ -49,14 +49,13 @@ console.log(chalk.green('Creating bot directory...'))
 
 await fse.copy(`${process.cwd()}/base/`, `./${directory}/`)
 console.log(chalk.green('Bot directory created!'))
-await console.log(chalk.green('Installing dependencies...'))
-
-await exec(`cd ${directory} && npm i`, async (err, ...args) => {
+console.log(chalk.green('Installing dependencies...'))
+exec(`cd ${directory} && npm i`, (err, ...args) => {
     if (err) throw err;
     console.log(chalk.green('Dependencies installed!'))
-    await console.log(chalk.green('Setting up .env...'))
+    console.log(chalk.green('Setting up .env...'))
 
-    await fs.writeFileSync(`./${directory}/.env`, fs.readFileSync(`./${directory}/.env`, 'utf8').replace('$TOKEN', token).replace('$CLIENT_ID', clientID).replace('$PREFIX', prefix), { encoding: 'utf8' })
+    fs.writeFileSync(`./${directory}/.env`, fs.readFileSync(`./${directory}/.env`, 'utf8').replace('$TOKEN', token).replace('$CLIENT_ID', clientID).replace('$PREFIX', prefix), { encoding: 'utf8' })
 
     console.log(chalk.green('Bot setup complete!'))
 })
