@@ -9,18 +9,33 @@ module.exports = {
         if (message.author.bot ||
             message.channel.type === 'DM' ||
             message.partial) return;
-        
+
         // Code for triggers
-        const triggers = fs.readdirSync('./triggers').filter(file => file.endsWith('.js'));
-        for (const file of triggers) {
+        fs
+        .readdirSync('./triggers')
+        .filter(file => file.endsWith('.js'))
+        .forEach(file => {
             const triggerData = require(`../triggers/${file}`);
-            for (const term of triggerData.terms) {
-                if (message.content.toLowerCase().includes(term.toLowerCase())) {
-                    triggerData.execute(message, client);
-                    return;
+            if (
+                !triggerData.terms ||
+                !triggerData.execute ||
+                (triggerData.requirePrefix &&
+                    !message.content.toLowerCase().startsWith(client.config.prefix))
+            ) return;
+            triggerData.terms.forEach((term) => {
+                if (triggerData.requirePrefix) {
+                    if (message.content.toLowerCase().startsWith(client.config.prefix + term)) {
+                        triggerData.execute(message, client);
+                        return
+                    }
+                } else {
+                    if (message.content.toLowerCase().includes(term)) {
+                        triggerData.execute(message, client);
+                        return
+                    }
                 }
-            }
-        }
+            })
+        })
         // Do stuff here
     },
 };
