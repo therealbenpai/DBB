@@ -1,0 +1,40 @@
+name: Security Report
+description: Submit a security report
+title: "[Security] "
+labels: "" #issue labels
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this security report form!
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Submition Checklist
+      options:
+        - label: I have read the [Code of Conduct](./CODE-OF-CONDUCT.md)
+          required: true
+        - label: I have checked other issues for similar security issues
+          required: true
+        - label: This security issue has a current fix
+          required: true
+  - type: input
+    id: affected-version
+    attributes:
+      label: What version of the software is affected?
+    validations:
+      required: true
+  - type: textarea
+    id: security-description
+    attributes:
+      label: What is the security issue?
+      placeholder: Please make sure to be specific
+    validations:
+      required: true
+  - type: textarea
+    id: security-fix
+    attributes:
+      label: What is the fix?
+    validations:
+      required: true
+  
