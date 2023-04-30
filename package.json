@@ -1,6 +1,6 @@
 {
   "name": "benpai-bot-builder",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A Discord.JS bot builder CLI system made by sparty182020",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,6 @@
     "url": "https://github.com/sparty182020/bot-builder/issues"
   },
   "homepage": "https://github.com/sparty182020/bot-builder#readme",
-  "type": "module",
   "bin": "index.js",
   "dependencies": {
     "chalk": "^3.0.0",
