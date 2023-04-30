@@ -4,6 +4,7 @@ import chalk from "chalk";
 import fs from "fs";
 import { exec } from "child_process";
 import fse from "fs-extra";
+import { cwd } from "process";
 
 /*
 Questions for the bot builder:
@@ -45,17 +46,17 @@ const questions = [
 
 const { directory, clientID, token, prefix } = (await inquirer.prompt(questions))
 
-console.log(chalk.green('Creating bot directory...'))
+console.log(chalk.green`Creating bot directory...`)
 
-await fse.copy(`${process.cwd()}/base/`, `./${directory}/`)
-console.log(chalk.green('Bot directory created!'))
-console.log(chalk.green('Installing dependencies...'))
+await fse.copy(`${__dirname}/base/`, `${cwd()}/${directory}/`)
+console.log(chalk.green`Bot directory created!`)
+console.log(chalk.green`Installing dependencies...`)
 exec(`cd ${directory} && npm i`, (err, ...args) => {
     if (err) throw err;
-    console.log(chalk.green('Dependencies installed!'))
-    console.log(chalk.green('Setting up .env...'))
+    console.log(chalk.green`Dependencies installed!`)
+    console.log(chalk.green`Setting up .env...`)
 
     fs.writeFileSync(`./${directory}/.env`, fs.readFileSync(`./${directory}/.env`, 'utf8').replace('$TOKEN', token).replace('$CLIENT_ID', clientID).replace('$PREFIX', prefix), { encoding: 'utf8' })
 
-    console.log(chalk.green('Bot setup complete!'))
+    console.log(chalk.green`Bot setup complete!`)
 })
