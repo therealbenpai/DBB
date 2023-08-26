@@ -10,16 +10,24 @@ module.exports = {
             newMessage.author.bot ||
             newMessage.channel.type === 'DM' ||
             newMessage.partial) return;
-        
+
         // Code for triggers
-        const triggers = fs.readdirSync(`${process.cwd()}/triggers`).filter(file => file.endsWith('.js'));
-        for (const file of triggers) {
-            const triggerData = require(`../triggers/${file}`);
-            for (const term of triggerData.terms) {
-                if (newMessage.content.toLowerCase().includes(term.toLowerCase())) {
-                    triggerData.execute(newMessage, client);
-                    return;
-                }
+        if (newMessage.content.startsWith(client.configs.prefix)) {
+            const commandBase = newMessage.content.split(' ')[0].slice(client.configs.prefix.length).toLowerCase();
+
+            for (let data of fs
+                .readdirSync('./commands')
+                .filter(file => file.endsWith('.js'))
+                .map(file => require(`../commands/${file}`))
+                .filter(command => command.triggers.includes(commandBase) && command.type.text === true)
+            ) {
+                if (data.blockDM && newMessage.channel.isDMBased()) return newMessage.reply({ content: client.configs.defaults.dmDisabled });
+                else if (data.channelLimits.length && !data.channelLimits.includes(newMessage.channel.type)) return newMessage.reply({ content: client.configs.defaults.invalidChannelType });
+                else if (data.requiredPerm && newMessage.guild && !newMessage.member.permissions.has(data.requiredPerm)) return newMessage.reply({ content: client.configs.defaults.noPerms });
+                else if (data.allowedRoles.length && !newMessage.member.roles.cache.some(role => data.allowedRoles.includes(role.id))) return newMessage.reply({ content: client.configs.defaults.noPerms });
+                else if (data.allowedUsers.length && !data.allowedUsers.includes(newMessage.author.id)) return newMessage.reply({ content: client.configs.defaults.noPerms });
+                else if (data.disabled) return newMessage.reply({ content: client.config.defaults.disabled });
+                else return data.messageExecute(newMessage, client);
             }
         }
         // Do stuff here

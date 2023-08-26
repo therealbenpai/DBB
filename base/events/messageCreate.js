@@ -1,41 +1,33 @@
-const { Events } = require('discord.js');
+const { Events, MessageType, Message } = require('discord.js');
 const fs = require('fs');
 
 module.exports = {
     name: Events.MessageCreate,
     once: false,
+    /**
+     * @param {import('discord.js').Message} message 
+     * @param {import('discord.js').Client} client 
+     * @returns 
+     */
     async execute(message, client) {
-        // Ignore if the author is a bot, if the message is in a DM, or if the message is partial
-        if (message.author.bot ||
-            message.channel.type === 'DM' ||
-            message.partial) return;
+        if (message.author.bot || message.partial) return;
 
-        // Code for triggers
-        fs
-        .readdirSync('./triggers')
-        .filter(file => file.endsWith('.js'))
-        .forEach(file => {
-            const triggerData = require(`../triggers/${file}`);
-            if (
-                !triggerData.terms ||
-                !triggerData.execute ||
-                (triggerData.requirePrefix &&
-                    !message.content.toLowerCase().startsWith(client.config.prefix))
-            ) return;
-            triggerData.terms.forEach((term) => {
-                if (triggerData.requirePrefix) {
-                    if (message.content.toLowerCase().startsWith(client.config.prefix + term)) {
-                        triggerData.execute(message, client);
-                        return
-                    }
-                } else {
-                    if (message.content.toLowerCase().includes(term)) {
-                        triggerData.execute(message, client);
-                        return
-                    }
-                }
-            })
-        })
-        // Do stuff here
-    },
+        if (message.content.startsWith(client.configs.prefix)) {
+            const commandBase = message.content.split(' ')[0].slice(client.configs.prefix.length).toLowerCase();
+            for (let data of fs
+                .readdirSync('./commands')
+                .filter(file => file.endsWith('.js'))
+                .map(file => require(`../commands/${file}`))
+                .filter(command => command.triggers.includes(commandBase) && command.type.text === true)
+            ) {
+                if (data.blockDM && message.channel.isDMBased()) return message.reply({ content: client.configs.defaults.dmDisabled });
+                else if (data.channelLimits && !data.channelLimits.includes(message.channel.type)) return message.reply({ content: client.configs.defaults.invalidChannelType });
+                else if (data.requiredPerm && message.guild && !message.member.permissions.has(data.requiredPerm)) return message.reply({ content: client.configs.defaults.noPerms });
+                else if (data.allowedRoles && !message.member.roles.cache.some(role => data.allowedRoles.includes(role.id))) return message.reply({ content: client.configs.defaults.noPerms });
+                else if (data.allowedUsers && !data.allowedUsers.includes(message.author.id)) return message.reply({ content: client.configs.defaults.noPerms });
+                else if (data.disabled) return message.reply({ content: client.config.defaults.disabled });
+                else return data.messageExecute(message, client);
+            }
+        }
+    }
 };

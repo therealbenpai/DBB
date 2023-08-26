@@ -1,11 +1,35 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 
 module.exports = {
     name: 'NAME',
+    triggers: [],
+    info: {
+        type: 'Moderation',
+        name: 'NAME',
+        description: 'DESCRIPTION',
+        usage: 'USAGE',
+        examples: ['EXAMPLES'],
+        permissions: ['Administrator'],
+        blockDM: true,
+        aliases: [],
+    },
+    requiredPerm: PermissionFlagsBits['Administrator'],
+    channelLimits: [], // ChannelTypes
+    allowedRoles: [], // Role IDs
+    allowedUsers: [], // User IDs
+    blockDM: true,
+    type: {
+        slash: true,
+        text: true
+    },
+    disabled: false,
     data: new SlashCommandBuilder()
         .setName('NAME')
         .setDescription('DESCRIPTION'),
-    async execute(interaction, client) {
+    async commandExecute(interaction, client) {
+        // Do stuff here
+    },
+    async messageExecute(message, client) {
         // Do stuff here
     }
 };

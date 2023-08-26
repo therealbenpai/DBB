@@ -1,14 +1,14 @@
 {
   "name": "benpai-bot-builder",
-  "version": "1.2.1",
-  "description": "A Discord.JS bot builder CLI system made by sparty182020",
+  "version": "1.2.2",
+  "description": "A Discord.JS bot builder CLI system made by Benpai",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sparty182020/bot-builder.git"
+    "url": "git+https://github.com/therealbenpai/bot-builder.git"
   },
   "keywords": [
     "discord",
@@ -24,9 +24,9 @@
   "author": "sparty182020",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/sparty182020/bot-builder/issues"
+    "url": "https://github.com/therealbenpai/bot-builder/issues"
   },
-  "homepage": "https://github.com/sparty182020/bot-builder#readme",
+  "homepage": "https://github.com/therealbenpai/bot-builder#readme",
   "bin": "index.js",
   "dependencies": {
     "chalk": "^3.0.0",

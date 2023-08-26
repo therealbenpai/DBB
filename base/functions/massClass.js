@@ -31,7 +31,7 @@ class Timer {
             minute: "2-digit",
             second: "2-digit",
             weekday: "long",
-            timeZone: "America/Detroit",
+            timeZone: "Australia/Darwin",
             timeZoneName: "longGeneric",
         }
     }
@@ -451,7 +451,7 @@ class Cryptography {
     static keyGen = (length) => new Array(new Number(length)).map(() => Math.ceil(Math.random() * 9)).join('')
 }
 
-class Utils {
+module.exports = class Utils {
     static CustomMath = CustomMath
     static Time = Timer
     static Converter = Converter
@@ -474,5 +474,3 @@ class Utils {
     get Crypto() { return Cryptography }
     set Crypto(_) { throw new ReferenceError('Crypto is Read-Only') }
 }
-
-module.exports = Utils
