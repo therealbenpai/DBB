@@ -2,6 +2,11 @@ const { StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('disc
 
 module.exports = {
     name: 'NAME',
+    info: {
+        name: 'NAME',
+        description: 'DESCRIPTION',
+        type: 'String',
+    },
     data: new StringSelectMenuBuilder()
         .setCustomId('NAME')
         .setPlaceholder('Placeholder')

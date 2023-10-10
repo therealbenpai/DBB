@@ -3,9 +3,11 @@ import('inquirer')
     .then((inquirer) => inquirer.default)
     .then((inquirer) => {
         const chalk = require('chalk');
-        const fs = require('fs');
+        const fs = {
+            ...require('fs'),
+            ...require('fs-extra')
+        }
         const { exec } = require('child_process');
-        const fse = require('fs-extra');
         const { cwd } = require('process');
 
         const questions = [
@@ -35,7 +37,7 @@ import('inquirer')
         inquirer.prompt(questions).then(async ({ directory, clientID, token, prefix }) => {
             console.log(chalk.green`Creating bot directory...`)
 
-            await fse.copy(`${__dirname}/base/`, `${cwd()}/${directory}/`)
+            await fs.copy(`${__dirname}/base/`, `${cwd()}/${directory}/`)
             console.log(chalk.green`Bot directory created!\nInstalling dependencies...`)
             exec(`cd ${directory} && npm i`, (err, ...args) => {
                 if (err) throw err;

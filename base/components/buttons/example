@@ -2,8 +2,13 @@ const { ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
     name: 'customID',
+    info: {
+        name: 'customID',
+        description: 'Button Description',
+        type: 'Primary',
+    },
     data: new ButtonBuilder()
-        .setCustomID('customID')
+        .setCustomId('customID')
         .setLabel('Button Label')
         .setStyle(ButtonStyle.Primary),
     async execute(interaction, client) {

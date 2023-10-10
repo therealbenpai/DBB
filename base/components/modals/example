@@ -2,6 +2,11 @@ const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = req
 
 module.exports = {
     name: 'NAME',
+    info: {
+        name: 'NAME',
+        description: 'DESCRIPTION',
+        type: 'Base Modal',
+    },
     data: new ModalBuilder()
         .setCustomId('NAME')
         .setTitle('TITLE')        

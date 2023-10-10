@@ -1,22 +1,15 @@
 class CustomMath {
     static devideWithRemainder = (a, b) => [Math.floor(a / b), a % b];
-    static collatz = (startingNumber = 5, maxIterations = 100) => {
-        if (startingNumber <= 0) throw new SyntaxError('Starting Number must be greater than 0');
-        let iterations = 0,
-            finished = false,
-            maxNumberIndex = 0,
-            maxNumber = startingNumber,
-            currentNumber = startingNumber;
-        while (iterations < maxIterations) {
-            currentNumber = (currentNumber % 2 == 1) ? (currentNumber * 3) + 1 : currentNumber / 2;
-            if (currentNumber > maxNumber) {
-                maxNumber = Math.max(maxNumber, currentNumber);
-                maxNumberIndex = iterations;
-            }
-            iterations++;
-            if (currentNumber == 4) { finished = true; break }
+    static collatz = (sn = 5, mi = 100) => {
+        if (sn <= 0) throw new SyntaxError('Starting Number must be greater than 0');
+        let i = 0, f = false, mn = sn, cn = sn
+       while (i < mi) {
+            cn = (cn % 2 == 1) ? (cn * 3) + 1 : cn / 2;
+            ++i;
+            mn = Math.max(mn, cn);
+            if (cn == 4) { f = true; break }
         }
-        return { iterations, finished, maxNumberIndex, maxNumber, currentNumber };
+        return { i, f, mn, cn };
     }
 }
 
@@ -31,15 +24,15 @@ class Timer {
             minute: "2-digit",
             second: "2-digit",
             weekday: "long",
-            timeZone: "Australia/Darwin",
+            timeZone: "America/Detroit",
             timeZoneName: "longGeneric",
         }
     }
     static timestamp = v => new Intl.DateTimeFormat(this.#timesettings.locale, this.#timesettings.options).format(v)
-    static elapsedTime = (timestamp) => isNaN(timestamp) ? TypeError("Timestamp must be a number") : Object.entries({ year: Math.floor(Math.floor(timestamp) / 60 / 60 / 24 / 30 / 12), month: Math.floor(Math.floor(timestamp) / 60 / 60 / 24 / 30) % 12, day: Math.floor(Math.floor(timestamp) / 60 / 60 / 24) % 30, hour: Math.floor(Math.floor(timestamp) / 60 / 60) % 24, minute: Math.floor(Math.floor(timestamp) / 60) % 60, second: Math.floor(timestamp) % 60 }).map(([key, value]) => value !== 0 ? `${value} ${key}${value == 1 ? '' : 's'}` : null).filter(value => value !== null).join(', ')
+    static elapsedTime = (timestamp) => isNaN(timestamp) ? TypeError("Timestamp must be a number") : Object.entries({ year: Math.floor(Math.floor(timestamp) / (60 ** 2) / 24 / 30 / 12), month: Math.floor(Math.floor(timestamp) / (60 ** 2) / 24 / 30) % 12, day: Math.floor(Math.floor(timestamp) / (60 ** 2) / 24) % 30, hour: Math.floor(Math.floor(timestamp) / (60 ** 2)) % 24, minute: Math.floor(Math.floor(timestamp) / 60) % 60, second: Math.floor(timestamp) % 60 }).map(([key, value]) => value !== 0 ? `${value} ${key}${value == 1 ? '' : 's'}` : null).filter(value => value !== null).join(', ')
     static stringToMilliseconds = (timeString) => typeof timeString !== 'string' ? TypeError("Time String must be a string") : timeString.split(' ').map(value => { switch (value.slice(-1)) { case 'w': return value.slice(0, -1) * 604800000; case 'd': return value.slice(0, -1) * 86400000; case 'h': return value.slice(0, -1) * 3600000; case 'm': return value.slice(0, -1) * 60000; case 's': return value.slice(0, -1) * 1000; } }).reduce((a, b) => a + b, 0);
     static stringToSeconds = (timeString) => this.stringToMilliseconds(timeString) / 1000;
-    static unixTime = (date) => (!(date instanceof Date) || !(typeof date == 'number')) ? TypeError("Date must be a Date object") : Math.round(date.getTime() / 1000)
+    static unixTime = (date) => (!(date instanceof Date) && typeof date !== 'number') ? TypeError("Date must be a Date object") : Math.round(date.getTime() / 1000)
 }
 
 class Converter {
@@ -56,12 +49,7 @@ class RandomGenerators {
     static bRanNum = (amount = 1, max = 10) => new Array(Math.max(amount, 1)).map(() => this.ranNum(max))
     static randHex = (prefix = '') => `${prefix}${Math.floor(Math.random() * Math.pow(16, 6)).toString(16)}`
     static bRandHex = (amount = 1, prefix = '') => new Array(Math.max(amount, 1)).map(() => this.randHex(prefix))
-    static customNumberGenerator = (min = 0, max = 100) => {
-        if (max <= 0 || min <= 0) throw new RangeError("Both min and max need to be above 0");
-        if (!(min < max)) throw new RangeError("min must be less than max");
-        if (max > Math.pow(10, 6)) throw new RangeError(`max must be less than ${Intl.NumberFormat('en-US').format(Math.pow(10, 6))}`);
-        return Math.round(Math.random() * Number(max) - Number(min)) + Number(min)
-    }
+    static customNumberGenerator = (min = 0, max = 100) => Math.round(Math.random() * Number(max) - Number(min)) + Number(min);
     static UUID = _ => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); });
     static randomString = (length = 10) => Array(length).map(_ => (Math.random() * 36 | 0).toString(36)).join('')
 }
@@ -451,6 +439,507 @@ class Cryptography {
     static keyGen = (length) => new Array(new Number(length)).map(() => Math.ceil(Math.random() * 9)).join('')
 }
 
+class SortingAlgoritms {
+    static bubbleSort(t) {
+        for (let e = 0; e < t.length; e++)
+            for (let r = 1; r < t.length - e; r++)
+                if (t[r - 1] > t[r]) {
+                    let l = t[r - 1];
+                    t[r - 1] = t[r], t[r] = l
+                } return t
+    }
+    static selectionSort(t) {
+        for (let e = 0; e < t.length; e++) {
+            let r = e;
+            for (let l = e + 1; l < t.length; l++) t[r] > t[l] && (r = l);
+            if (r != e) {
+                let o = t[e];
+                t[e] = t[r], t[r] = o
+            }
+        }
+        return t
+    }
+    static insertionSort(t) {
+        for (let e = 1; e < t.length; e++) {
+            let r = e,
+                l = t[e];
+            for (; r > 0 && t[r - 1] > l;) t[r] = t[--r];
+            t[r] = l
+        }
+        return t
+    }
+    static mergeSort(t) {
+        return t.length < 2 ? t : function (t, e) {
+            let r = [];
+            for (; t.length && e.length;) t[0] <= e[0] ? r.push(t.shift()) : r.push(e.shift());
+            for (; t.length;) r.push(t.shift());
+            for (; e.length;) r.push(e.shift());
+            return r
+        }(this.mergeSort(t.slice(0, Math.floor(t.length / 2))), this.mergeSort(t.slice(Math.floor(t.length / 2))))
+    }
+    static quickSort(t) {
+        if (t.length < 2) return t;
+        let e = t[0],
+            r = [],
+            l = [];
+        for (let o = 1; o < t.length; o++) t[o] < e ? r.push(t[o]) : l.push(t[o]);
+        return this.quickSort(r)
+            .concat(e, this.quickSort(l))
+    }
+    static heapSort(t) {
+        let e = (t, e, r) => {
+                let l = t[e];
+                t[e] = t[r], t[r] = l
+            },
+            r = (t, r, l) => {
+                let o = r,
+                    n = 2 * o + 1,
+                    f = o;
+                for (; n <= l;) {
+                    if (t[f] < t[n] && e(t, f, n), n + 1 <= l && t[f] < t[n + 1] && e(t, f, n + 1), f == o) return;
+                    e(t, o, f), f = o = f, n = 2 * o + 1
+                }
+            },
+            l = t.length,
+            o = l - 1;
+        for (((t, e) => {
+                let l = Math.floor((e - 2) / 2);
+                for (; l >= 0;) r(t, l--, e - 1)
+            })(t, l); o > 0;) e(t, o--, 0), r(t, 0, o);
+        return t
+    }
+    static coingSort(t) {
+        let e = 0,
+            r = 0,
+            l = [];
+        for (e = Math.min(...t); e <= Math.max(...t); e++) l[e] = 0;
+        for (e = 0; e < t.length; e++) l[t[e]]++;
+        for (e = Math.min(...t); e <= Math.max(...t); e++)
+            for (; l[e]-- > 0;) t[r++] = e;
+        return t
+    }
+    static radixSort(t) {
+        let e = 0,
+            r = 1;
+        for (; r < Math.max(...t);) {
+            let l = Array(10)
+                .fill()
+                .map(() => []);
+            for (e = 0; e < t.length; e++) l[Math.floor(t[e] / r % 10)].push(t[e]);
+            e = 0;
+            for (let o = 0; o < 10; o++)
+                for (let n = 0; n < l[o].length; n++) t[++e] = l[o][n];
+            r *= 10
+        }
+        return t
+    }
+    static bucketSort(t) {
+        let e = 0,
+            r = Array(Math.floor((Math.max(...t) - Math.min(...t)) / 10) + 1);
+        for (e = 0; e < r.length; e++) r[e] = [];
+        for (e = 0; e < t.length; e++) r[Math.floor((t[e] - Math.min(...t)) / 10)].push(t[e]);
+        for (e = 0, t = []; e < r.length; e++) {
+            this.insertionSort(r[e]);
+            for (let l = 0; l < r[e].length; l++) t.push(r[e][l])
+        }
+        return t
+    }
+    static shellSort(t) {
+        let e = t.length / 2;
+        for (; e > 0;) {
+            for (let r = e; r < t.length; r++) {
+                let l = r,
+                    o = t[r];
+                for (; l >= e && t[l - e] > o;) t[l] = t[l - e], l -= e;
+                t[l] = o
+            }
+            e = 2 == e ? e = 1 : parseInt(5 * e / 11)
+        }
+        return t
+    }
+    static cocktailSort(t) {
+        let e = !0,
+            r = 0,
+            l = t.length - 1;
+        for (; e;) {
+            e = !1;
+            for (let o = r; o < l; o++)
+                if (t[o] > t[o + 1]) {
+                    let n = t[o];
+                    t[o] = t[o + 1], t[o + 1] = n, e = !0
+                } if (!e) break;
+            e = !1, --l;
+            for (let f = l - 1; f >= r; f--)
+                if (t[f] > t[f + 1]) {
+                    let i = t[f];
+                    t[f] = t[f + 1], t[f + 1] = i, e = !0
+                }++ r
+        }
+        return t
+    }
+    static combSort(t) {
+        let e = Math.floor(t.length / 1.3);
+        for (; e > 0;) {
+            for (let r = 0; r + e < t.length; r++)
+                if (t[r] > t[r + e]) {
+                    let l = t[r];
+                    t[r] = t[r + e], t[r + e] = l
+                } e = Math.floor(e / 1.3)
+        }
+        return t
+    }
+    static cycleSort(t) {
+        for (let e = 0; e < t.length - 1; e++) {
+            let r = t[e],
+                l = e;
+            for (let o = e + 1; o < t.length; o++) t[o] < r && ++l;
+            if (l == e) continue;
+            for (; r == t[l];) l++;
+            let n = t[l];
+            for (t[l] = r, r = n; l != e;) {
+                l = e;
+                for (let f = e + 1; f < t.length; f++) t[f] < r && ++l;
+                for (; r == t[l];) ++l;
+                n = t[l], t[l] = r, r = n
+            }
+        }
+        return t
+    }
+    static gnomeSort(t) {
+        let e = 1;
+        for (; e < t.length;)
+            if (0 == e || t[e - 1] <= t[e]) ++e;
+            else {
+                let r = t[e];
+                t[e] = t[e - 1], t[e - 1] = r, --e
+            } return t
+    }
+    static pancakeSort(t) {
+        for (let e = t.length - 1; e >= 1; e--) {
+            let r = 0,
+                l = t[0];
+            for (let o = 1; o <= e; o++) t[o] > l && (r = o, l = t[o]);
+            if (r != e) {
+                if (r > 0)
+                    for (let n = 0; n <= r; n++) t[n] = t.slice(0, r + 1)
+                        .reverse()[n];
+                for (let f = 0; f <= e; f++) t[f] = t.slice(0, e + 1)
+                    .reverse()[f]
+            }
+        }
+        return t
+    }
+    static stoogeSort(t, e = 0, r = t.length - 1) {
+        return ! function (t, e, r) {
+            if (t[e] > t[r]) {
+                let l = t[e];
+                t[e] = t[r], t[r] = l
+            }
+            if (e + 1 >= r) return t;
+            let o = Math.floor((r - e + 1) / 3);
+            this.stoogeSort(t, e, r - o), this.stoogeSort(t, e + o, r), this.stoogeSort(t, e, r - o)
+        }(t, e, r), t
+    }
+    static bitonicSort(t) {
+        return ! function (t, e = !0) {
+            if (t.length <= 1);
+            else {
+                let r = Math.floor(t.length / 2);
+                this.bitonicSort(t.slice(0, r), !0), this.bitonicSort(t.slice(r), !1), this.bitonicMerge(t, 0, t.length, e)
+            }
+        }(t, !0), t
+    }
+    static bogoSort(t) {
+        for (; ! function (t) {
+                for (let e = 1; e < t.length; e++)
+                    if (t[e - 1] > t[e]) return !1;
+                return !0
+            }(t);) t = t.sort(() => Math.random() - .5);
+        return t
+    }
+    static timSort(t) {
+        let e = (t, e, r) => {
+                for (let l = e + 1; l <= r; l++) {
+                    let o = l,
+                        n = t[l];
+                    for (; o > e && t[o - 1] > n;) t[o] = t[--o];
+                    t[o] = n
+                }
+                return t
+            },
+            r = (t, e, r, l) => {
+                let e = Array(r - e + 1),
+                    l = Array(l - r);
+                for (let o = 0; o < r - e + 1; o++) e[o] = t[e + o];
+                for (let n = 0; n < l - r; n++) l[n] = t[r + 1 + n];
+                let f = 0,
+                    i = 0,
+                    h = e;
+                for (; f < r - e + 1 && i < l - r;) t[++h] = e[f] <= l[i] ? e[++f] : l[++i];
+                for (; f < r - e + 1;) t[++h] = e[++f];
+                for (; i < l - r;) t[++h] = l[++i];
+                return t
+            },
+            l = t => {
+                let e = 0;
+                for (; t >= 64;) e |= 1 & t, t >>= 1;
+                return t + e
+            },
+            o = l(t.length);
+        for (let n = 0; n < t.length; n += o) e(t, n, Math.min(n + o - 1, t.length - 1));
+        for (let f = o; f < t.length; f *= 2)
+            for (let i = 0; i < t.length; i += 2 * f) {
+                let h = i + f - 1,
+                    _ = Math.min(i + 2 * f - 1, t.length - 1);
+                h < _ && r(t, i, h, _)
+            }
+        return t
+    }
+    static treeSort(t) {
+        let e = null,
+            r = (t, e) => null == t ? new Node(e) : (e < t.data ? t.l = r(t.l, e) : t.r = r(t.r, e), t);
+        for (let l = 0; l < t.length; l++) e = r(e, t[l]);
+        let o = 0;
+        return ((t, e) => {
+            t || (this.inOrder(t.l, e), e.call(this, t), this.inOrder(t.r, e))
+        })(e, function (e) {
+            t[++o] = e.data
+        }), t
+    }
+    static cubeSort(t) {
+        let e = Array(t.length);
+        for (let r = 0; r < t.length; r++) e[r] = 0;
+        for (let l = 0; l < t.length; l++) e[t[l] - Math.min(...t)]++;
+        let o = 0;
+        for (let n = 0; n <= Math.max(...t) - Math.min(...t); n++)
+            for (let f = 0; f < e[n]; f++) t[++o] = n + Math.min(...t);
+        return t
+    }
+    static mergeInsertionSort(t) {
+        if (t.length < 16) {
+            for (let e = 1; e < t.length; e++) {
+                let r = e,
+                    l = t[e];
+                for (; r > 0 && t[r - 1] > l;) t[r] = t[--r];
+                t[r] = l
+            }
+            return t
+        }
+        let o = Math.floor(t.length / 2),
+            n = t.slice(0, o),
+            f = t.slice(o);
+        return function (t, e) {
+            let r = [];
+            for (; t.length && e.length;) t[0] <= e[0] ? r.push(t.shift()) : r.push(e.shift());
+            for (; t.length;) r.push(t.shift());
+            for (; e.length;) r.push(e.shift());
+            return r
+        }(this.mergeSort(n), this.mergeSort(f))
+    }
+    static strandSort(t) {
+        let e = t => {
+                if (1 == t.length) return t;
+                let r = [],
+                    l = [];
+                for (let o = 0; o < t.length; o++) {
+                    let n = t[o];
+                    0 == r.length || n >= r[r.length - 1] ? r.push(n) : (l = l.concat(e(r)), r = [], --o)
+                }
+                return l.concat(e(r))
+            },
+            r = [],
+            l = [];
+        for (let o = 0; o < t.length; o++) {
+            let n = t[o];
+            0 == r.length || n >= r[r.length - 1] ? r.push(n) : (l = l.concat(e(r)), r = [], --o)
+        }
+        return l.concat(e(r))
+    }
+    static brickSort(t) {
+        let e = !1;
+        for (; !e;) {
+            e = !0;
+            for (let r = 1; r <= t.length - 2; r += 2)
+                if (t[r] > t[r + 1]) {
+                    let l = t[r];
+                    t[r] = t[r + 1], t[r + 1] = l, e = !1
+                } for (let o = 0; o <= t.length - 2; o += 2)
+                if (t[o] > t[o + 1]) {
+                    let n = t[o];
+                    t[o] = t[o + 1], t[o + 1] = n, e = !1
+                }
+        }
+        return t
+    }
+    static librarySort(t) {
+        let e = !1,
+            r = 1;
+        for (; !e;) {
+            e = !0;
+            for (let l = 0; l + r < t.length; l++)
+                if (t[l] > t[l + r]) {
+                    let o = t[l];
+                    t[l] = t[l + r], t[l + r] = o, e = !1
+                } 0 == (r = Math.floor(10 * r / 13)) && (r = 1)
+        }
+        return t
+    }
+    static beadSort(t) {
+        let e = Math.max(...t),
+            r = Array(t.length);
+        for (let l = 0; l < r.length; l++) r[l] = Array(e)
+            .fill(0);
+        for (let o = 0; o < t.length; o++)
+            for (let n = 0; n < t[o]; n++) r[o][n] = 1;
+        for (let f = 0; f < e; f++) {
+            let i = 0;
+            for (let h = 0; h < t.length; h++) i += r[h][f], r[h][f] = 0;
+            for (let _ = t.length - i; _ < t.length; _++) r[_][f] = 1
+        }
+        for (let s = 0; s < t.length; s++) {
+            let $;
+            for ($ = 0; $ < e && 1 == r[s][$]; $++);
+            t[s] = $
+        }
+        return t
+    }
+    static gravitySort(t) {
+        let e = Math.max(...t),
+            r = [];
+        for (let l = 0; l < e; l++) {
+            let o = [];
+            for (let n = 0; n < t.length; n++) t[n] > l ? o.push(1) : o.push(0);
+            r.push(o)
+        }
+        for (let f = 0; f < r.length; f++) {
+            let i = 0;
+            for (let h = 0; h < r[f].length; h++) 1 == r[f][h] && ++i;
+            for (let _ = t.length - i; _ < t.length; _++) r[f][_] = 1
+        }
+        for (let s = 0; s < t.length; s++) {
+            let $;
+            for ($ = 0; $ < e && 1 == r[$][s]; $++);
+            t[s] = $
+        }
+        return t
+    }
+    static cocktailShakerSort(t) {
+        let e = !0,
+            r = 0,
+            l = t.length - 1;
+        for (; e;) {
+            e = !1;
+            for (let o = r; o < l; o++)
+                if (t[o] > t[o + 1]) {
+                    let n = t[o];
+                    t[o] = t[o + 1], t[o + 1] = n, e = !0
+                } if (!e) break;
+            e = !1, --l;
+            for (let f = l - 1; f >= r; f--)
+                if (t[f] > t[f + 1]) {
+                    let i = t[f];
+                    t[f] = t[f + 1], t[f + 1] = i, e = !0
+                }++ r
+        }
+        return t
+    }
+    static oddEvenSort(t) {
+        let e = !1;
+        for (; !e;) {
+            e = !0;
+            for (let r = 1; r < t.length - 1; r += 2)
+                if (t[r] > t[r + 1]) {
+                    let l = t[r];
+                    t[r] = t[r + 1], t[r + 1] = l, e = !1
+                } for (let o = 0; o < t.length - 1; o += 2)
+                if (t[o] > t[o + 1]) {
+                    let n = t[o];
+                    t[o] = t[o + 1], t[o + 1] = n, e = !1
+                }
+        }
+        return t
+    }
+    static bozoSort(t) {
+        let e = t => {
+            for (let e = 1; e < t.length; e++)
+                if (t[e] < t[e - 1]) return !1;
+            return !0
+        };
+        for (; !e(t);) {
+            let r = Math.floor(Math.random() * t.length),
+                l = Math.floor(Math.random() * t.length),
+                o = t[r];
+            t[r] = t[l], t[l] = o
+        }
+        return t
+    }
+    static slowSort(t) {
+        if (t.length < 2) return t;
+        let e = Math.floor(t.length / 2),
+            r = t.slice(0, e),
+            l = t.slice(e);
+        return function (t, e) {
+            let r = [];
+            for (; t.length && e.length;) t[0] <= e[0] ? r.push(t.shift()) : r.push(e.shift());
+            for (; t.length;) r.push(t.shift());
+            for (; e.length;) r.push(e.shift());
+            return r
+        }(this.slowSort(r), this.slowSort(l))
+    }
+    static permutationSort(t) {
+        let e = !1;
+        for (; !e;) {
+            e = !0;
+            for (let r = 0; r < t.length - 1; r++)
+                if (t[r] > t[r + 1]) {
+                    e = !1;
+                    let l = t[r];
+                    t[r] = t[r + 1], t[r + 1] = l
+                }
+        }
+        return t
+    }
+    static stalinSort(t) {
+        let e = 1;
+        for (; e < t.length;) t[e - 1] > t[e] ? t.splice(e, 1) : e++;
+        return t
+    }
+    static bubbleSelectionSort(t) {
+        for (let e = 0; e < t.length; e++) {
+            let r = e;
+            for (let l = e + 1; l < t.length; l++) t[r] > t[l] && (r = l);
+            if (r != e) {
+                let o = t[e];
+                t[e] = t[r], t[r] = o
+            }
+        }
+        return t
+    }
+    static quickInsertionSort(t) {
+        var e, l;
+        let o = (t, e, r) => {
+            if (e >= r) return;
+            let l = t[r],
+                n = e;
+            for (let f = e; f < r; f++)
+                if (t[f] < l) {
+                    let i = t[f];
+                    t[f] = t[n], t[n] = i, n++
+                } let h = t[partitionIndex];
+            return t[n] = t[r], t[r] = h, o(t, e, n - 1), o(t, n + 1, r), t
+        };
+        return e = t, (l = t.length - 1) - 0 < 16 ? ((t, e, r) => {
+            for (let l = e + 1; l <= r; l++) {
+                let o = l,
+                    n = t[l];
+                for (; o > e && t[o - 1] > n;) t[o] = t[--o];
+                t[o] = n
+            }
+            return t
+        })(e, 0, l) : o(e, 0, l)
+    }
+}
+
 module.exports = class Utils {
     static CustomMath = CustomMath
     static Time = Timer
@@ -459,6 +948,7 @@ module.exports = class Utils {
     static Formatter = Formatter
     static ArrayAndJSON = ArrayAndJSON
     static Crypto = Cryptography
+    static SortingAlgoritms = SortingAlgoritms
     get CustomMath() { return CustomMath }
     set CustomMath(_) { throw new ReferenceError('CustomMath is Read-Only') }
     get Time() { return Timer }
@@ -473,4 +963,6 @@ module.exports = class Utils {
     set ArrayAndJSON(_) { throw new ReferenceError('ArrayAndJSON is Read-Only') }
     get Crypto() { return Cryptography }
     set Crypto(_) { throw new ReferenceError('Crypto is Read-Only') }
+    get SortingAlgoritms() { return SortingAlgoritms }
+    set SortingAlgoritms(_) { throw new ReferenceError('SortingAlgoritms is Read-Only') }
 }
