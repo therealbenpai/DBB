@@ -2,41 +2,19 @@
 import('inquirer')
     .then((inquirer) => inquirer.default)
     .then((inquirer) => {
-        const chalk = require('chalk');
-        const fs = {
-            ...require('fs'),
-            ...require('fs-extra')
-        }
-        const { exec } = require('child_process');
-        const { cwd } = require('process');
-
-        const questions = [
-            {
-                type: 'input',
-                name: 'directory',
-                message: 'What would you like to name your bot directory?'
-            },
-            {
-                type: 'input',
-                name: 'clientID',
-                message: 'What is your bot\'s client ID?'
-            },
-            {
-                type: 'password',
-                mask: '*',
-                name: 'token',
-                message: 'What is your bot\'s token?'
-            },
-            {
-                type: 'input',
-                name: 'prefix',
-                message: 'What would you like your bot\'s prefix to be?'
-            }
-        ];
-
-        inquirer.prompt(questions).then(async ({ directory, clientID, token, prefix }) => {
+        const genQ = (type, name, message, extra = {}) => Object.assign({}, { type, name, message }, extra)
+        const
+            chalk = require('chalk'),
+            fs = require('fs-extra'),
+            { exec } = require('child_process'),
+            { cwd } = require('process');
+        inquirer.prompt([
+            genQ('input', 'directory', 'What would you like to name your bot directory?'),
+            genQ('input', 'clientID', 'What is your bot\'s client ID?'),
+            genQ('password', 'token', 'What is your bot\'s token?', { mask: '*' }),
+            genQ('input', 'prefix', 'What would you like your bot\'s prefix to be?')
+        ]).then(async ({ directory, clientID, token, prefix }) => {
             console.log(chalk.green`Creating bot directory...`)
-
             await fs.copy(`${__dirname}/base/`, `${cwd()}/${directory}/`)
             console.log(chalk.green`Bot directory created!\nInstalling dependencies...`)
             exec(`cd ${directory} && npm i`, (err, ...args) => {

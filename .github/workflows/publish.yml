@@ -1,0 +1,39 @@
+name: Publish NPM Package
+
+on:
+  push:
+    tags:
+      - v*
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Publish to NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${GH_TOKEN}" >> ~/.npmrc
+          npm publish --provenance --registry https://registry.npmjs.org/
+          npm publish --registry https://npm.pkg.github.com/therealbenpai
+          echo "=== Start of Transmition ===" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Published to NPM & GitHub Packages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "NPM Package: https://www.npmjs.com/package/@therealbenpai/zdcors" >> $GITHUB_STEP_SUMMARY
+          echo "GitHub Package: https://github.com/therealbenpai/zdcors/pkgs/npm/zdcors" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "=== End of Transmition ===" >> $GITHUB_STEP_SUMMARY
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

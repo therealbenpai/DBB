@@ -1,8 +1,14 @@
 {
-  "name": "benpai-bot-builder",
-  "version": "1.3.0",
-  "description": "A Discord.JS bot builder CLI system made by Benpai",
+  "name": "@therealbenpai/dbb",
+  "version": "1.0.0",
+  "description": "A Discord.JS bot builder CLI system made by therealbenpai",
   "main": "index.js",
+  "readme": "README.md",
+  "author": {
+    "name": "Benjamin",
+    "email": "therealbenpai@gmail.com",
+    "url": "https://ben.thefemdevs.com"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,7 +27,16 @@
     "build",
     "tool"
   ],
-  "author": "sparty182020",
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/therealbenpai"
+    }
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "license": "AGPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/therealbenpai/bot-builder/issues"

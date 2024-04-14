@@ -6,7 +6,6 @@ const {
     ModalSubmitInteraction,
     ChatInputCommandInteraction
 } = require('discord.js');
-const fs = require('fs');
 
 module.exports = {
     name: Events.InteractionCreate,

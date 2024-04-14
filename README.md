@@ -7,11 +7,12 @@ This is a simple bot builder for Discord.JS. It is designed to be easy to use an
 To run the bot builder tool, execute the following command:
 
 ```bash
-npx benpai-bot-builder
+npx @therealbenpai/dbb
 ```
 
 ## File Structure
-```
+
+```plain
 /base
 ⊢ /commands
     ∟ example[.js]

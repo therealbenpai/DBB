@@ -13,10 +13,8 @@ const { Routes } = require('discord-api-types/v10');
 const chalk = require('chalk');
 const os = require('os');
 require('dotenv').config({ path: `${__dirname}/.env` });
-
 //- Internal Functions
 const Utils = require('./functions/massClass');
-
 //- Constants
 const baseDir = __dirname;
 const {
@@ -24,53 +22,21 @@ const {
     PREFIX: prefix,
     CLIENT_ID: clientID,
 } = process.env;
-
 //- Component Collections
 const buttons = new Collection();
 const selectMenus = new Collection();
 const contextMenus = new Collection();
 const modals = new Collection();
-
 //- Base Collections
 const commands = new Collection();
 const events = new Collection();
 const components = new Collection();
 const triggers = new Collection();
-
 const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.GuildModeration,
-        GatewayIntentBits.GuildEmojisAndStickers,
-        GatewayIntentBits.GuildIntegrations,
-        GatewayIntentBits.GuildWebhooks,
-        GatewayIntentBits.GuildInvites,
-        GatewayIntentBits.GuildVoiceStates,
-        GatewayIntentBits.GuildPresences,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.GuildMessageReactions,
-        GatewayIntentBits.GuildMessageTyping,
-        GatewayIntentBits.DirectMessages,
-        GatewayIntentBits.DirectMessageReactions,
-        GatewayIntentBits.DirectMessageTyping,
-        GatewayIntentBits.MessageContent
-    ],
-    partials: [
-        Partials.Channel,
-        Partials.GuildMember,
-        Partials.Message,
-        Partials.Reaction,
-        Partials.User,
-        Partials.ThreadMember
-    ],
+    intents: Array.from(Object.values(GatewayIntentBits)),
+    partials: Array.from(Object.values(Partials)),
     presence: {
-        activities: [
-            {
-                type: ActivityType.Watching,
-                name: 'Filler Text'
-            }
-        ],
+        activities: [{ type: ActivityType.Watching, name: 'Filler Text' }],
         status: PresenceUpdateStatus.DoNotDisturb,
     }
 });
@@ -189,64 +155,43 @@ fs
 
 const interactions = [];
 
-fs
-    .readdirSync(`${__dirname}/commands`)
-    .filter(file => file.endsWith('.js'))
-    .map(file => require(`${__dirname}/commands/${file}`))
-    .filter(command => command.type.slash === true)
-    .forEach(command => {
+const operations = [
+    [`${__dirname}/commands`, (command) => {
+        if (command.type.slash !== true) return;
         commands.set(command.name, command);
         console.log(chalk`{bold Loaded command} {blue ${command.name}}`);
         client.runtimeStats.commands.registered++;
         interactions.push(command.data.toJSON());
-    });
-
-fs
-    .readdirSync(`${__dirname}/components/contextMenus`)
-    .filter(file => file.endsWith('.js'))
-    .forEach(file => {
-        const command = require(`${__dirname}/components/contextMenus/${file}`);
+    }],
+    [`${__dirname}/components/contextMenus`, (command) => {
+        contextMenus.set(command.name, command);
         console.log(chalk`{bold Loaded contextMenu} {red ${command.name}}`);
         client.runtimeStats.components.contextMenus.registered++;
         interactions.push(command.data.toJSON());
-        contextMenus.set(command.name, command);
-    });
-
-fs.readdirSync(`${__dirname}/components/buttons`)
-    .filter(file => file.endsWith('.js'))
-    .forEach(file => {
-        const command = require(`${__dirname}/components/buttons/${file}`);
+    }],
+    [`${__dirname}/components/buttons`, (command) => {
+        buttons.set(command.name, command);
         console.log(chalk`{bold Loaded button} {red ${command.name}}`);
         client.runtimeStats.components.buttons.registered++;
-        buttons.set(command.name, command);
-    });
-
-fs.readdirSync(`${__dirname}/components/selectMenus`)
-    .filter(file => file.endsWith('.js'))
-    .forEach(file => {
-        const command = require(`${__dirname}/components/selectMenus/${file}`);
+    }],
+    [`${__dirname}/components/selectMenus`, (command) => {
+        selectMenus.set(command.name, command);
         console.log(chalk`{bold Loaded selectMenu} {red ${command.name}}`);
         client.runtimeStats.components.selectMenus.registered++;
-        selectMenus.set(command.name, command);
-    });
-
-fs.readdirSync(`${__dirname}/components/modals`)
-    .filter(file => file.endsWith('.js'))
-    .forEach(file => {
-        const command = require(`${__dirname}/components/modals/${file}`);
+    }],
+    [`${__dirname}/components/modals`, (command) => {
+        modals.set(command.name, command);
         console.log(chalk`{bold Loaded modal} {red ${command.name}}`);
         client.runtimeStats.components.modals.registered++;
-        modals.set(command.name, command);
-    });
-
-fs.readdirSync(`${__dirname}/triggers`)
-    .filter(file => file.endsWith('.js'))
-    .forEach(file => {
-        const trigger = require(`${__dirname}/triggers/${file}`);
+    }],
+    [`${__dirname}/triggers`, (trigger) => {
+        triggers.set(trigger.name, trigger);
         console.log(chalk`{bold Loaded trigger} {red ${trigger.name}}`);
         client.runtimeStats.triggers.registered++;
-        triggers.set(trigger.name, trigger);
-    });
+    }],
+]
+
+operations.forEach(([x, c]) => fs.readdirSync(x).filter(file => file.endsWith('.js')).map(file => require(`${x}/${file}`)).forEach(c))
 
 components.set('buttons', buttons);
 components.set('selectMenus', selectMenus);

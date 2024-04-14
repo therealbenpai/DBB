@@ -11,7 +11,6 @@ module.exports = {
             newMessage.author.bot ||
             newMessage.channel.type === 'DM' ||
             newMessage.partial) return;
-
         // Code for triggers
         if (newMessage.content.startsWith(client.configs.prefix)) {
             const commandBase = newMessage.content.split(' ')[0].slice(client.configs.prefix.length).toLowerCase();
