@@ -1,7 +1,8 @@
 name: Bug Report
 description: Submit a bug report
 title: "[Bug Fix] "
-labels: "bug" #issue labels
+labels:
+  - "bug" #issue labels
 body:
   - type: markdown
     attributes:

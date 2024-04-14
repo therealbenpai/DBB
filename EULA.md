@@ -1,6 +1,5 @@
 # End-User License Agreement (EULA) of Benpai's Discord Bot Builder
 
-
 This End-User License Agreement ("EULA") is a legal agreement between you and GPU Killers LLC in association with Benpai. Our EULA was created by using the [EULA Template](https://www.termsfeed.com/blog/sample-eula-template/) for Benpai's Discord Bot Builder.
 
 This EULA agreement governs your acquisition and use of our Benpai's Discord Bot Builder software ("Software") directly from GPU Killers LLC in association with Benpai or indirectly through a GPU Killers LLC authorized reseller or distributor (a "Reseller").

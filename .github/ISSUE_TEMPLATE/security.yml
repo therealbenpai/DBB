@@ -1,7 +1,8 @@
 name: Security Report
 description: Submit a security report
 title: "[Security] "
-labels: "security" #issue labels
+labels:
+  - "security" #issue labels
 body:
   - type: markdown
     attributes:

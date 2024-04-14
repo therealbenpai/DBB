@@ -1,7 +1,8 @@
 name: Bug Report
 description: Submit a bug report
 title: "[Bug] "
-labels: "security" #issue labels
+labels:
+  - "security" #issue labels
 body:
   - type: markdown
     attributes:
