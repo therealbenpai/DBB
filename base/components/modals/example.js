@@ -1,15 +1,16 @@
 const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { Discord: { Initializers: { Components } } } = require('../../modules/util.js');
 
-module.exports = {
-    name: 'NAME',
-    info: {
-        name: 'NAME',
-        description: 'DESCRIPTION',
-        type: 'Base Modal',
-    },
-    data: new ModalBuilder()
+module.exports = new Components.Modal(
+    'NAME',
+    new Components.Info(
+        'NAME',
+        'DESCRIPTION',
+        'Base Modal',
+    ),
+    new ModalBuilder()
         .setCustomId('NAME')
-        .setTitle('TITLE')        
+        .setTitle('TITLE')
         .addComponents(
             new ActionRowBuilder()
                 .addComponents(
@@ -17,10 +18,8 @@ module.exports = {
                         .setCustomId('INPUT')
                         .setPlaceholder('Placeholder')
                         .setStyle(TextInputStyle.Short)
-                        .setLabel('Label')
-                )
+                        .setLabel('Label'),
+                ),
         ),
-    async execute(interaction, client) {
-        // Do stuff here
-    }
-}
+)
+    .setExecute(async (_interaction, _client) => { /* Do Stuff Here */ });

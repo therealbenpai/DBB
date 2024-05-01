@@ -15,26 +15,29 @@ npx @therealbenpai/dbb
 ```plain
 /base
 ⊢ /commands
-    ∟ example[.js]
-⊢ /events
-    ⊢ ready.js
-    ⊢ messageCreate.js
-    ⊢ messageUpdate.js
-    ⊢ interactionCreate.js
-    ∟ example[.js]
-⊢ /functions
-    ∟ massClass.js
-⊢ /triggers
-    ∟ example[.js]
+    ∟ example.js
+    ⊢ help.js
 ⊢ /components
     ⊢ /buttons
-        ∟ example[.js]
+        ∟ example.js
     ⊢ /selectMenus
-        ∟ example[.js]
+        ∟ example.js
     ⊢ /modals
-        ∟ example[.js]
+        ∟ example.js
     ∟ /contextMenus
-        ∟ example[.js]
+        ∟ example.js
+⊢ /events
+    ∟ example.js
+    ⊢ interactionCreate.js
+    ⊢ messageCreate.js
+    ⊢ messageUpdate.js
+    ⊢ ready.js
+⊢ /messages
+    ∟ example.js
+⊢ /modules
+    ∟ util.js
+⊢ /triggers
+    ∟ example.js
 ⊢ /node_modules
 ⊢ index.js
 ⊢ .env
@@ -88,5 +91,4 @@ Please refer to the [contributing guidelines](CONTRIBUTING.md) for more informat
 ## Credits
 
 - Lead Developer and Owner: [Benpai](https://sparty18.com)
-- Partial Original Code Holder: [DAAD](https://daad.wtf)
 - Partial Original Code Holder: [FemDevs](https://github.com/femdevs)
