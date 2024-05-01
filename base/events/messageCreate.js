@@ -41,45 +41,29 @@ module.exports = new Event(Events.MessageCreate)
                     )
                         .map((value, index) => value && checkPrefix(['channel', 'role', 'user', 'message'][index]))
                         .findIndex((value) => value === true);
-                if (executed === -1) {
-                    return;
-                }
+                if (executed === -1) return;
                 client.bumpRTS(`triggers.${['channel', 'role', 'user', 'message'][executed]}`);
                 return execute(message, client);
             });
         if (content.startsWith(client.configs.prefix)) {
-            const falseArray = [null, [], false, undefined];
+            const check = (v) => [null, [], false, undefined].includes(v)
             const command = Array.from(client.Commands.values())
                 .find((cmd) => cmd.triggers
                     .includes(content.split(' ')[0].slice(client.configs.prefix.length).toLowerCase()));
-            if (!command || !command.type.text) {
-                return;
-            }
+            if (!command || !command.type.text) return;
             client.bumpRTS('commands.text');
-            const failureReason = Array.of(
-                !falseArray.includes(command.blockDMs) && message.channel.isDMBased(),
-                !falseArray.includes(command.channelLimits) &&
-                command.channelLimits.includes(message.channel.type),
+            const fail = Array.of(
+                check(command.blockDMs) && message.channel.isDMBased(),
+                check(command.channelLimits) && command.channelLimits.includes(message.channel.type),
                 Array.of(
-                    falseArray.includes(command.requiredPerm),
-                    !message.guild,
-                    message.member.permissions.has(command.requiredPerm),
-                ).every((value) => !value),
-                Array.of(
-                    falseArray.includes(command.allowedRoles),
-                    message.member.roles.cache.some((role) => command.allowedRoles.includes(role.id)),
-                ).every((value) => !value),
-                Array.of(
-                    falseArray.includes(command.allowedUsers),
-                    command.allowedUsers.includes(message.author.id),
-                ).every((value) => !value),
-                command.disabled,
-            ).findIndex((value) => !value);
-            return failureReason
-                ? message.reply(
-                    ['dmDisabled', 'invalidChannelType', 'noPerms', 'noPerms', 'noPerms', 'disabled']
-                        .map((e) => client.configs.defaults[e])[failureReason],
-                )
+                    Array.of(check(command.requiredPerm), message.guild, !message.member.permissions.has(command.requiredPerm)),
+                    Array.of(check(command.allowedRoles), !message.member.roles.cache.some((role) => command.allowedRoles.includes(role.id))),
+                    Array.of(check(command.allowedUsers), !command.allowedUsers.includes(message.author.id)),
+                ).map(a => a.every(Boolean)).includes(true),
+                command.disabled
+            ).findIndex(true);
+            return fail
+                ? message.reply(['dmDisabled', 'invalidChannelType', 'noPerms', 'disabled'].map((e) => client.configs.defaults[e])[fail])
                 : command.messageExecute(message, client);
         }
     });

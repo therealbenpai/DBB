@@ -20,31 +20,29 @@ const handle = (client, command) => {
                 EmbedUtils.qField(
                     'Required Permissions',
                     command.requiredPerm
-                        ? Object.entries(PermissionFlagsBits).find(([_, value]) => value === command.requiredPerm)[0]
+                        ? Object.entries(PermissionFlagsBits).find(([_, v]) => v === command.requiredPerm)[0]
                         : 'None',
                 ),
                 EmbedUtils.qField(
                     'Channel Types',
                     List.and(
                         command.channelLimits
-                            .map((x) => Object.entries(ChannelType).find(([_, value]) => value === x)[0]),
+                            .map((x) => Object.entries(ChannelType).find(([_, v]) => v === x)[0]),
                     ) || 'None',
                 ),
                 EmbedUtils.qField('Allowed Roles', List.and(command.allowedRoles.map(Mentions.role)) || 'None'),
                 EmbedUtils.qField('Allowed Users', List.and(command.allowedUsers.map(Mentions.user)) || 'None'),
             ]
             : Array.from(client.Commands.values())
-                .reduce((d, value) => {
-                    if (!d.find(([key, _]) => key === value.info.type)) {
-                        d.push([value.info.type, []]);
+                .reduce((d, v) => {
+                    if (!d.find(([k, _]) => k === v.info.type)) {
+                        d.push([v.info.type, []]);
                     }
-                    d[d.findIndex(([key, _]) => key === value.info.type)][1].push(`/${value.info.name}`);
+                    d[d.findIndex(([k, _]) => k === v.info.type)][1].push(`/${v.info.name}`);
                     return d;
                 }, [])
-                .map(([key, value]) => EmbedUtils.qField(key, List.and(value.map(Markdown.inlineCode)))));
-    if (command.permissions) {
-        embed.addFields(EmbedUtils.qField('Required Permissions', List.and(command.permissions)));
-    }
+                .map(([k, v]) => EmbedUtils.qField(k, List.and(v.map(Markdown.inlineCode)))));
+    if (command.permissions) embed.addFields(EmbedUtils.qField('Required Permissions', List.and(command.permissions)));
 };
 
 const checkCommand = (cmd, command) => cmd && !command

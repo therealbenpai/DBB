@@ -160,9 +160,7 @@ const operations = [
         `${__dirname}/commands`,
         (command) => {
             Commands.set(command.name, command);
-            if (command.type.text) {
-                client.regRTS('commands.text');
-            }
+            if (command.type.text) client.regRTS('commands.text');
             if (command.type.slash) {
                 client.regRTS('commands.slash');
                 interactions.push(command.data.toJSON());
@@ -174,17 +172,8 @@ const operations = [
         `${__dirname}/triggers`,
         (trigger) => {
             Triggers.set(trigger.name, trigger);
-            if (trigger.triggerConfig.channel.activated) {
-                client.regRTS('triggers.channel');
-            }
-            if (trigger.triggerConfig.role.activated) {
-                client.regRTS('triggers.role');
-            }
-            if (trigger.triggerConfig.user.activated) {
-                client.regRTS('triggers.user');
-            }
-            if (trigger.triggerConfig.message.activated) {
-                client.regRTS('triggers.message');
+            for (const key of Object.keys(trigger.triggerConfig)) {
+                if (trigger.triggerConfig[key].activated) client.regRTS(`triggers.${key}`);
             }
             console.log(chalk`{bold Loaded trigger} {yellow ${trigger.name}}`);
         },
@@ -227,12 +216,7 @@ const operations = [
         /** @param {_Message} msg */
         (msg) => {
             const gv = msg.getValue;
-            PredefinedMessages.set(msg.name, Object.assign(msg, {
-                getValue: (c) => {
-                    client.bumpRTS('predefinedMessages');
-                    return gv(c);
-                },
-            }));
+            PredefinedMessages.set(msg.name, Object.assign(msg, { getValue: (c) => { client.bumpRTS('predefinedMessages'); return gv(c); } }));
             client.regRTS('predefinedMessages');
             console.log(chalk`{bold Loaded Pre-defined message} {red ${msg.name}}`);
         },
@@ -243,11 +227,7 @@ const operations = [
 // ? 0: Directory,
 // ? 1: Operation
 
-operations
-    .forEach((sect) => fs.readdirSync(sect[0])
-        .filter((file) => file !== 'example.js')
-        .map((file) => require(`${sect[0]}/${file}`))
-        .forEach(sect[1]));
+operations.forEach((s) => fs.readdirSync(s[0]).filter((f) => f !== 'example.js').map((f) => require(`${s[0]}/${f}`)).forEach(s[1]));
 new REST({ version: '10' })
     .setToken(process.env.TOKEN)
     .put(Routes.applicationCommands(process.env.CLIENT_ID), { body: interactions })

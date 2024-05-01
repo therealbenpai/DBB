@@ -1,8 +1,9 @@
 {
   "name": "@therealbenpai/dbb",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A Discord.JS bot builder CLI system made by therealbenpai",
   "main": "index.js",
+  "type": "module",
   "readme": "README.md",
   "author": {
     "name": "Benjamin",

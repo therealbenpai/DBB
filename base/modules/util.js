@@ -476,6 +476,24 @@ class SubContainer {
  * Timer.unixTime(new Date()) // 1631698800
  */
 class Timer {
+    static stmSTL = {
+        y: 'year',
+        M: 'month',
+        d: 'day',
+        h: 'hour',
+        m: 'minute',
+        s: 'second',
+    };
+    static stmDict = {
+        y: 31104e6,
+        M: 2592e6,
+        d: 864e5,
+        h: 36e5,
+        m: 6e4,
+        s: 1e3,
+    };
+    static stm = (v,k) => v.slice(0, -1) * this.stmDict[k];
+    static et = (v, k, mod = 2**32-1) => (v / (this.stmDict[mod] / 1e3)) % this.stmDict[k];
     static ts = {
         locale: 'en-US',
         options: {
@@ -517,22 +535,20 @@ class Timer {
      * Timer.elapsedTime(65478) // '18 hours, 11 minutes, and 18 seconds'
      */
     static elapsedTime = (t) => {
-        if (isNaN(t)) {
-            throw new TypeError('Timestamp must be a number');
-        }
+        if (isNaN(t)) throw new TypeError('Timestamp must be a number');
         t = Math.floor(t);
         return List.and(
             Object.entries({
-                year: t / 31104e3,
-                month: t / 2592e3 % 12,
-                day: t / 864e2 % 30,
-                hour: t / 36e2 % 24,
-                minute: t / 6e1 % 60,
-                second: t % 6e1,
+                year: this.et(t, 'y'),
+                month: this.et(t, 'M', 12),
+                day: this.et(t, 'd', 30),
+                hour: this.et(t, 'h', 24),
+                minute: this.et(t, 'm', 60),
+                second: this.et(t, 's')
             })
-                .map(([key, value]) => [key, Math.floor(value)])
-                .filter(([_, value]) => value > 0)
-                .map(([key, value]) => `${value} ${Text.pluralize(value, key)}`)
+                .map(([k, v]) => [k, Math.floor(v)])
+                .filter(([_, v]) => Boolean(v))
+                .map(([k, v]) => `${v} ${Text.pluralize(v, k)}`)
                 .join(', '),
         );
     };
@@ -547,15 +563,7 @@ class Timer {
         ? TypeError('Time String must be a string')
         : timeString
             .split(' ')
-            .map((value) => {
-                switch (value.slice(-1)) {
-                    case 'w': return value.slice(0, -1) * 6048e5;
-                    case 'd': return value.slice(0, -1) * 864e5;
-                    case 'h': return value.slice(0, -1) * 36e5;
-                    case 'm': return value.slice(0, -1) * 6e4;
-                    case 's': return value.slice(0, -1) * 1e3;
-                }
-            })
+            .map((value) => this.stm(value, value.slice(-1)))
             .reduce((a, b) => a + b, 0);
     /**
      * String to Seconds
@@ -589,6 +597,7 @@ class Timer {
  * List.or(['apples', 'oranges', 'bananas']) // 'apples, oranges, or bananas'
  */
 class List {
+    static quick = (v, type) => new Intl.ListFormat('en-US', { style: 'long', type }).format(v);
     /**
      * And List
      *
@@ -596,7 +605,7 @@ class List {
      * @param {Array<string>} value The list of items to format
      * @returns {string} The formatted list
      */
-    static and = (value) => new Intl.ListFormat('en-US', { style: 'long', type: 'conjunction' }).format(value);
+    static and = (value) => this.quick(value, 'conjunction');
     /**
      * Or List
      *
@@ -604,7 +613,7 @@ class List {
      * @param {Array<string>} value The list of items to format
      * @returns {string} The formatted list
      */
-    static or = (value) => new Intl.ListFormat('en-US', { style: 'long', type: 'disjunction' }).format(value);
+    static or = (value) => this.quick(value, 'disjunction');
 }
 
 /**
@@ -1336,9 +1345,7 @@ class RuntimeStatistics {
     exec = () => ++this.executed;
 }
 
-const thisSetter = (t) => {
-    throw new ReferenceError(`${t.name} is Read - Only`);
-};
+const thisSetter = (t) => { throw new ReferenceError(`${t.name} is Read - Only`) };
 
 class Utils {
     static Time = Timer;
@@ -1347,45 +1354,25 @@ class Utils {
     static List = List;
     static RuntimeStatistics = RuntimeStatistics;
 
-    get Time() {
-        return Timer;
-    }
+    get Time() { return Timer }
 
-    set Time(_) {
-        thisSetter(Timer);
-    }
+    set Time(_) { thisSetter(Timer) }
 
-    get Discord() {
-        return Discord;
-    }
+    get Discord() { return Discord }
 
-    set Discord(_) {
-        thisSetter(Discord);
-    }
+    set Discord(_) { thisSetter(Discord) }
 
-    get Text() {
-        return Text;
-    }
+    get Text() { return Text }
 
-    set Text(_) {
-        thisSetter(Text);
-    }
+    set Text(_) { thisSetter(Text) }
 
-    get List() {
-        return List;
-    }
+    get List() { return List }
 
-    set List(_) {
-        thisSetter(List);
-    }
+    set List(_) { thisSetter(List) }
 
-    get RuntimeStatistics() {
-        return RuntimeStatistics;
-    }
+    get RuntimeStatistics() { return RuntimeStatistics }
 
-    set RuntimeStatistics(_) {
-        thisSetter(RuntimeStatistics);
-    }
+    set RuntimeStatistics(_) { thisSetter(RuntimeStatistics) }
 }
 
 module.exports = Utils;
