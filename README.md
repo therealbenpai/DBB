@@ -2,7 +2,7 @@
 
 This is a simple bot builder for Discord.JS. It is designed to be easy to use and easy to understand. It uses the package [inquirer](https://www.npmjs.com/package/inquirer) to ask questions and [chalk](https://www.npmjs.com/package/chalk) to color the output. It also uses [fs-extra](https://www.npmjs.com/package/fs-extra) to copy the files from the template folder to the new bot folder.
 
-> [!IMPORTANT]
+> [!NOTE]
 > This package is still in development, and is not yet ready for production use. Use at your own risk.
 > This package also lacks error handling in some areas, and may not work as expected in all cases.
 > Future versions may include more features, and simplify the process of setting up the system.
@@ -87,7 +87,7 @@ This is the file that will hold all of your environment variables. It will be us
 
 Be careful with this file, as it contains sensitive information. You should never share this file with anyone.
 
-> [!IMPORTANT]
+> [!CAUTION]
 > You should never share your bot token with anyone. It is the key to your bot, and should be kept secret at all times.
 > If you accidentally share your bot token, you should regenerate it immediately.
 
