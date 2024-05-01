@@ -2,6 +2,11 @@
 
 This is a simple bot builder for Discord.JS. It is designed to be easy to use and easy to understand. It uses the package [inquirer](https://www.npmjs.com/package/inquirer) to ask questions and [chalk](https://www.npmjs.com/package/chalk) to color the output. It also uses [fs-extra](https://www.npmjs.com/package/fs-extra) to copy the files from the template folder to the new bot folder.
 
+> [!IMPORTANT]
+> This package is still in development, and is not yet ready for production use. Use at your own risk.
+> This package also lacks error handling in some areas, and may not work as expected in all cases.
+> Future versions may include more features, and simplify the process of setting up the system.
+
 ## Running
 
 To run the bot builder tool, execute the following command:
@@ -74,7 +79,17 @@ This is the main file for your bot. It will be the entry point for your bot.
 
 ### .env
 
-This is the file that will hold all of your environment variables. It will be used to store your bot token and other important information. THIS FILE SHOULD NOT BE COMMITTED TO GITHUB NOR SHOULD IT BE SHARED WITH ANYONE.
+This is the file that will hold all of your environment variables. It will be used to store your bot token and other important information.
+
+> [!TIP]
+> You can edit this file at any time to add more environment variables.
+> As well as that, you can change your bot token at any time by changing the `TOKEN` variable in this file.
+
+Be careful with this file, as it contains sensitive information. You should never share this file with anyone.
+
+> [!IMPORTANT]
+> You should never share your bot token with anyone. It is the key to your bot, and should be kept secret at all times.
+> If you accidentally share your bot token, you should regenerate it immediately.
 
 ### package.json
 
@@ -87,6 +102,10 @@ This project used a AGPL (Affero General Public License) version 3.0 license. Th
 ## Contributing
 
 Please refer to the [contributing guidelines](CONTRIBUTING.md) for more information.
+
+## Code of Conduct
+
+Please refer to the [code of conduct](CODE_OF_CONDUCT.md) for more information.
 
 ## Credits
 
