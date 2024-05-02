@@ -7,28 +7,28 @@ import * as ts from 'chalk-template';
 const t = ts.template;
 
 const genQ = (ry, n, m, e = {}) => Object.assign({}, { type: ry, name: n, message: m }, e);
-const rs = (e, s, tx, rv) => {
+const rs = (e, s, [msg, misc], rv) => {
     s[e ? 'error' : 'success']({
         text: t(
             e
-                ? `{red ${tx[0]} failed}\n\nError: ${tx[1]}`
-                : `{green ${tx[0]} Successfully!}`
+                ? `{red ${msg} failed}\n\nError: ${misc.name}\n${misc.message}`
+                : `{green ${msg} Successfully!}`
         )
     })
     return rv
 }
 
 const { d, cid, tk, p } = await i.prompt([
-    genQ('input', 'd', "What would you like to name your bot d?"),
+    genQ('input', 'd', "What would you like to name your bot directory?"),
     genQ('input', 'cid', "What is your bot's client ID?"),
     genQ('password', 'tk', "What is your bot's token?", { mask: '*' }),
     genQ('input', 'p', "What would you like your bot's prefix to be?")
 ]);
 
 //* Creating Bot Directory
-const cDS = s.createSpinner(t(`{yellow Creating bot d...}`)).start();
+const cDS = s.createSpinner(t(`{yellow Creating bot directory...}`)).start();
 await fs
-    .copy(`${process.argv[1]}/base/`, `${process.cwd()}/${d}/`)
+    .copy(`${process.argv[1].replace(/\\*/gm, '/').replace('/index.js', '')}/base/`, `${process.cwd()}/${d}/`)
     .then(
         (s) => rs(false, cDS, [`Created bot d`], s),
         (f) => rs(true, cDS, ['Directory Creation', f], f)
