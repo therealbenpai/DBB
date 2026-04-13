@@ -1,9 +1,9 @@
-const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-const { Discord: { Initializers: { Components } } } = require('../../modules/util.js');
+import { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { Modal, ComponentInfo } from '../../lib/component';
 
-module.exports = new Components.Modal(
+module.exports = new Modal(
     'NAME',
-    new Components.Info(
+    new ComponentInfo(
         'NAME',
         'DESCRIPTION',
         'Base Modal',

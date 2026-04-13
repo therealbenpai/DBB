@@ -1,9 +1,9 @@
-const { StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
-const { Discord: { Initializers: { Components } } } = require('../../modules/util.js');
+import { StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from 'discord.js';
+import { SelectMenu, ComponentInfo } from '../../lib/component';
 
-module.exports = new Components.SelectMenu(
+module.exports = new SelectMenu(
     'NAME',
-    new Components.Info(
+    new ComponentInfo(
         'NAME',
         'DESCRIPTION',
         'String',
